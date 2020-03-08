@@ -18,10 +18,11 @@ CREATE TABLE position (
 );
 
 CREATE TABLE employee (
-  id INT PRIMARY,
+  id INT PRIMARY KEY,
   first_name VARCHAR(30),
   last_name VARCHAR(30),
   pos_id INT,
   manager_id INT,
   PRIMARY KEY (id)
 );
+
