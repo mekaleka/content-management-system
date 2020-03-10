@@ -1,127 +1,201 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 require("console.table");
-// create the connection information for the sql database
+// create the connection information for the sql database.
 var connection = mysql.createConnection({
-    host: "localhost",
-  
-    // Your port; if not 3306
-    port: 3306,
-  
-    // Your username
-    user: "root",
-  
-    // Your password
-    password: "",
-    database: "contract_db"
+  host: "localhost",
+
+  // Your port; if not 3306
+  port: 3306,
+
+  // Your username
+  user: "root",
+
+  // Your password
+  password: "",
+  database: "contract_db"
+});
+
+//connect to mysql server and sql database.
+connection.connect(function(err) {
+  if (err) throw err;
+  console.log("connection");
+  start();
+});
+
+//Function with a prompt to allow user to select between questions.
+function start() {
+  inquirer
+    .prompt({
+      name: "toView",
+      type: "list",
+      message: "What would you like to do?",
+      choices: [
+        "View All Employees?",
+        "Add Employee?",
+        "View All Department?",
+        "Add Department?",
+        "View All Position?",
+        "Add Position?",
+        "exit"
+      ]
+    }) //if else statements for answering selections to view.
+    .then(function(answer) {
+      if (answer.toView === "View All Employees?") {
+        viewEmployees();
+      } else if (answer.toView === "Add Employee?") {
+        addEmployee();
+      } else if (answer.toView === "View All Department?") {
+        viewDepartment();
+      } else if (answer.toView === "Add Department") {
+        addDepartment();
+      } else if (answer.toView === "View All Position?") {
+        viewPosition();
+      } else if (answer.toView === "Add Position?") {
+        addPosition();
+      } else {
+        connection.end();
+      }
+    });
+}
+
+//Allows user to retrieve all employee data when called.
+function viewEmployees() {
+  console.log("employeeData");
+  connection.query("select * from employee", function(err, data) {
+    if (err) throw err;
+    console.table(data);
+    // console.log(err)
+    start();
   });
+}
 
-  //connect to mysql server and sql database. 
-  connection.connect(function(err) {
-      if (err) throw err;
-      console.log("connection")
-      start();
-  })
-//
-  function start() {
-    inquirer
-      .prompt({
-        name: "toView",
-        type: "list",
-        message: "What would you like to do?",
-        choices: ["View All Employees?", "Add Employee?", "View All Departments?", "Add Department?", "View All Position?", "Add Position?", "exit"]
-      })
-      .then(function(answer) {
-        if (answer.toView === "View All Employees?") {
-          viewEmployees();
-        }
-        else if (answer.toView === "View All Departments?") {
-          viewDepartment();
-        }else if (answer.toView === "View All Position?") {
-          viewPosition();
-        }
-        else if(answer.toView === "Add Employee?") {
-          addEmployee();
-        } else{
-          connection.end();
-        }
-      });
-  }
-//selects all employee data when called. 
-  function viewEmployees(){
-    console.log("employeeData")
-    connection.query ("select * from employee", function(err, data){
-      if (err) throw err
-      console.table(data)
-      // console.log(err)
-      start()
-    })
-  }
-//selects all department data when called.
-  function viewDepartment(){
-    console.log("employeeData")
-    connection.query ("select * from department", function(err, data){
-      if (err) throw err
-      console.table(data)
-      // console.log(err)
-      start()
-    })
-  }
-//selects all position data when called.
-  function viewPosition(){
-    console.log("employeeData")
-    connection.query ("select * from position", function(err, data){
-      if (err) throw err
-      console.table(data)
-      // console.log(err)
-      start()
-    })
-  }
+//Allows user to retrieve all department data when called.
+function viewDepartment() {
+  console.log("employeeData");
+  connection.query("select * from department", function(err, data) {
+    if (err) throw err;
+    console.table(data);
+    // console.log(err)
+    start();
+  });
+}
 
-  function viewDepartment(){
-    console.log("employeeData")
-    connection.query ("select * from department", function(err, data){
-      if (err) throw err
-      console.table(data)
-      // console.log(err)
-      start()
-    })
-  }
+//Allows user to retrieve all employee position data when called.
+function viewPosition() {
+  console.log("employeeData");
+  connection.query("select * from position", function(err, data) {
+    if (err) throw err;
+    console.table(data);
+    // console.log(err)
+    start();
+  });
+}
 
-  function addEmployee(){
-    console.log("addEmployee")
-    inquirer.prompt([
+//Allows user to retrieve all employee data when called.
+function viewDepartment() {
+  console.log("employeeData");
+  connection.query("select * from department", function(err, data) {
+    if (err) throw err;
+    console.table(data);
+    // console.log(err)
+    start();
+  });
+}
+
+//function to add an employee to the employee table.
+function addEmployee() {
+  console.log("addEmployee");
+  inquirer
+    .prompt([
       {
-        type: "input", 
+        type: "input",
         name: "firstname",
         message: "firstname"
       },
       {
-        type: "input", 
+        type: "input",
         name: "lastname",
         message: "lastname"
       },
       {
-        type: "list", 
+        type: "list",
         name: "positionid",
         message: "positionid",
         choices: [1, 2, 3, 4]
       },
       {
-        type: "list", 
+        type: "list",
         name: "managerid",
         message: "managerid",
         choices: [1, 2]
       }
     ])
-    .then(function(response){
-      connection.query ("insert into employee (first_name, last_name, pos_id, manager_id) values(?, ?, ?, ?)",[response.firstname, response.lastname, response.positionid, response.managerid], function(err, data){
-        if (err) throw err
-        console.table(data)
-        // console.log(err)
-        start()
-      })
-      
-    })
-    
-  }
+    .then(function(response) {
+      connection.query(
+        "insert into employee (first_name, last_name, pos_id, manager_id) values(?, ?, ?, ?)",
+        [
+          response.firstname,
+          response.lastname,
+          response.positionid,
+          response.managerid
+        ],
+        function(err, data) {
+          if (err) throw err;
+          console.table(data);
+          // console.log(err)
+          start();
+        }
+      );
+    });
+}
+
+//function to add a Department to the Department table.
+function addDepartment() {
+  console.log("addDepartment");
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "department",
+        message: "department"
+      }
+    ])
+    .then(function(response) {
+      connection.query(
+        "insert into department (name) values(?)",
+        [response.name],
+        function(err, data) {
+          if (err) throw err;
+          console.table(data);
+          // console.log(err)
+          start();
+        }
+      );
+    });
+}
+
+//function to add a Position to the position table.
+function addPosition() {
+  console.log("addPosition");
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "position",
+        message: "position"
+      }
+    ])
+    .then(function(response) {
+      connection.query(
+        "insert into position (title, salary,department_id) values(?, ?, ?)",
+        [response.title, response.salary, response.department_id],
+        function(err, data) {
+          if (err) throw err;
+          console.table(data);
+          // console.log(err)
+          start();
+        }
+      );
+    });
+}
