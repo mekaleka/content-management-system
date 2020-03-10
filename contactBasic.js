@@ -48,7 +48,7 @@ function start() {
         addEmployee();
       } else if (answer.toView === "View All Department?") {
         viewDepartment();
-      } else if (answer.toView === "Add Department") {
+      } else if (answer.toView === "Add Department?") {
         addDepartment();
       } else if (answer.toView === "View All Position?") {
         viewPosition();
@@ -153,8 +153,8 @@ function addDepartment() {
     ])
     .then(function(response) {
       connection.query(
-        "insert into department (id, name) values(?, ?)",
-        [response.id, response.name],
+        "insert into department (name) values(?)",
+        [response.name],
         function(err, data) {
           if (err) throw err;
           console.table(data);

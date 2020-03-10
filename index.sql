@@ -9,18 +9,22 @@ CREATE TABLE department (
   name VARCHAR(30)
 );
 CREATE TABLE position (
-  id INT PRIMARY KEY,
+  id INT AUTO_INCREMENT,
   title VARCHAR(30),
   salary DECIMAL(10,2) NULL,
-  department_id INT(30)
+  department_id INT(30),
+  PRIMARY KEY(id)
 );
+
 CREATE TABLE employee (
-  id INT PRIMARY KEY,
+  id INT AUTO_INCREMENT,
   first_name VARCHAR(30),
   last_name VARCHAR(30),
   pos_id INT,
-  manager_id INT
+  manager_id INT,
+  PRIMARY KEY(id)
 );
+
 INSERT INTO department VALUES(1, "marketing");
 INSERT INTO department VALUES(2, "production");
 
