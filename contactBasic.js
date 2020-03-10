@@ -1,6 +1,7 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 require("console.table");
+
 // create the connection information for the sql database.
 var connection = mysql.createConnection({
   host: "localhost",
@@ -13,10 +14,10 @@ var connection = mysql.createConnection({
 
   // Your password
   password: "",
-  database: "contract_db"
+  database: "contact_db"
 });
 
-//connect to mysql server and sql database.
+//connect to mysql workbench.
 connection.connect(function(err) {
   if (err) throw err;
   console.log("connection");
@@ -31,7 +32,7 @@ function start() {
       type: "list",
       message: "What would you like to do?",
       choices: [
-        "View All Employees?",
+        "View All Employee?",
         "Add Employee?",
         "View All Department?",
         "Add Department?",
@@ -41,8 +42,8 @@ function start() {
       ]
     }) //if else statements for answering selections to view.
     .then(function(answer) {
-      if (answer.toView === "View All Employees?") {
-        viewEmployees();
+      if (answer.toView === "View All Employee?") {
+        viewEmployee();
       } else if (answer.toView === "Add Employee?") {
         addEmployee();
       } else if (answer.toView === "View All Department?") {
@@ -60,7 +61,7 @@ function start() {
 }
 
 //Allows user to retrieve all employee data when called.
-function viewEmployees() {
+function viewEmployee() {
   console.log("employeeData");
   connection.query("select * from employee", function(err, data) {
     if (err) throw err;
@@ -92,42 +93,31 @@ function viewPosition() {
   });
 }
 
-//Allows user to retrieve all employee data when called.
-function viewDepartment() {
-  console.log("employeeData");
-  connection.query("select * from department", function(err, data) {
-    if (err) throw err;
-    console.table(data);
-    // console.log(err)
-    start();
-  });
-}
-
 //function to add an employee to the employee table.
 function addEmployee() {
-  console.log("addEmployee");
+  console.log("Add Employee");
   inquirer
     .prompt([
       {
         type: "input",
         name: "firstname",
-        message: "firstname"
+        message: "Add First Name"
       },
       {
         type: "input",
         name: "lastname",
-        message: "lastname"
+        message: "Add Last Name"
       },
       {
         type: "list",
         name: "positionid",
-        message: "positionid",
+        message: "Assign a Position ID",
         choices: [1, 2, 3, 4]
       },
       {
         type: "list",
         name: "managerid",
-        message: "managerid",
+        message: "Assign a Manager ID",
         choices: [1, 2]
       }
     ])
@@ -146,49 +136,49 @@ function addEmployee() {
           // console.log(err)
           start();
         }
-      );
-    });
+      )
+    })
 }
 
 //function to add a Department to the Department table.
 function addDepartment() {
-  console.log("addDepartment");
+  console.log("Department Name");
   inquirer
     .prompt([
       {
         type: "input",
         name: "department",
-        message: "department"
+        message: "Add a New Department"
       }
     ])
     .then(function(response) {
       connection.query(
-        "insert into department (name) values(?)",
-        [response.name],
+        "insert into department (id, name) values(?, ?)",
+        [response.id, response.name],
         function(err, data) {
           if (err) throw err;
           console.table(data);
           // console.log(err)
           start();
         }
-      );
-    });
+      )
+    })
 }
 
 //function to add a Position to the position table.
 function addPosition() {
-  console.log("addPosition");
+  console.log("Position Name");
   inquirer
     .prompt([
       {
         type: "input",
         name: "position",
-        message: "position"
+        message: "Add a Position"
       }
     ])
     .then(function(response) {
       connection.query(
-        "insert into position (title, salary,department_id) values(?, ?, ?)",
+        "insert into position (title, salary, department_id) values(?, ?, ?)",
         [response.title, response.salary, response.department_id],
         function(err, data) {
           if (err) throw err;
@@ -196,6 +186,6 @@ function addPosition() {
           // console.log(err)
           start();
         }
-      );
-    });
+      )
+    })
 }

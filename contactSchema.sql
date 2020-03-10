@@ -1,10 +1,10 @@
---
-DROP DATABASE IF EXISTS contract_DB;
---
-CREATE DATABASE contract_DB;
---
-USE contract_DB;
---
+
+DROP DATABASE IF EXISTS contact_DB;
+
+CREATE DATABASE contact_DB;
+
+USE contact_DB;
+
 CREATE TABLE department (
   id INT PRIMARY KEY,
   name VARCHAR(30),
