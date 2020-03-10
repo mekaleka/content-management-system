@@ -136,8 +136,8 @@ function addEmployee() {
           // console.log(err)
           start();
         }
-      )
-    })
+      );
+    });
 }
 
 //function to add a Department to the Department table.
@@ -154,15 +154,15 @@ function addDepartment() {
     .then(function(response) {
       connection.query(
         "insert into department (name) values(?)",
-        [response.name],
+        [response.department],
         function(err, data) {
           if (err) throw err;
           console.table(data);
           // console.log(err)
           start();
         }
-      )
-    })
+      );
+    });
 }
 
 //function to add a Position to the position table.
@@ -174,18 +174,32 @@ function addPosition() {
         type: "input",
         name: "position",
         message: "Add a Position"
+      },
+      {
+        type: "input",
+        name: "salary",
+        message: "Add a Salary"
+      },
+      {
+        type: "input",
+        name: "department_id",
+        message: "Add a dept ID"
       }
     ])
     .then(function(response) {
       connection.query(
-        "insert into position (title, salary, department_id) values(?, ?, ?)",
-        [response.title, response.salary, response.department_id],
+        "INSERT INTO position SET ?",
+        {
+          title: response.position,
+          salary: response.salary,
+          department_id: response.department_id
+        },
         function(err, data) {
           if (err) throw err;
           console.table(data);
           // console.log(err)
           start();
         }
-      )
-    })
+      );
+    });
 }
