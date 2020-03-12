@@ -38,6 +38,7 @@ function start() {
         "Add Department?",
         "View All Position?",
         "Add Position?",
+        "Update Position",
         "exit"
       ]
     }) //if else statements for answering selections to view.
@@ -54,6 +55,8 @@ function start() {
         viewPosition();
       } else if (answer.toView === "Add Position?") {
         addPosition();
+      } else if (answer.toView === "Update Position") {
+        updatePosition();
       } else {
         connection.end();
       }
@@ -154,7 +157,7 @@ function addDepartment() {
     .then(function(response) {
       connection.query(
         "insert into department (name) values(?)",
-        [response.department],
+        response.department,
         function(err, data) {
           if (err) throw err;
           console.table(data);
@@ -202,4 +205,29 @@ function addPosition() {
         }
       );
     });
+}
+
+function updatePosition() {
+  // viewEmployee()
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "employeeID",
+        message: "Update employee ID"
+      },
+      {
+        type: "choices",
+        name: "positionID",
+        message: "Update Position ID",
+        choices: [1, 2, 3, 4]
+      },
+    ])
+    .then(function(response) {
+      connection.query(
+            "UPDATE employee SET pos_id = ? WHERE id = ?", 
+            [response.positionID, response.employeeID],
+            function(err, result) { start()
+            })
+          })
 }
