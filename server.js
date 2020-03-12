@@ -1,3 +1,4 @@
+//Establishing connections with dependencies.
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 require("console.table");
@@ -6,13 +7,13 @@ require("console.table");
 var connection = mysql.createConnection({
   host: "localhost",
 
-  // Your port; if not 3306
+  //Port; if not 3306
   port: 3306,
 
-  // Your username
+  //Username
   user: "root",
 
-  // Your password
+  //Password
   password: "",
   database: "contact_db"
 });
@@ -24,8 +25,9 @@ connection.connect(function(err) {
   start();
 });
 
-//Function with a prompt to allow user to select between questions.
+//Start function with a prompt to allow user to select between questions.
 function start() {
+  //uses
   inquirer
     .prompt({
       name: "toView",
@@ -41,7 +43,7 @@ function start() {
         "Update Position",
         "exit"
       ]
-    }) //if else statements for answering selections to view.
+    }) //if else statements that defines the text that the user will select to view or update.
     .then(function(answer) {
       if (answer.toView === "View All Employee?") {
         viewEmployee();
@@ -63,7 +65,7 @@ function start() {
     });
 }
 
-//Allows user to retrieve all employee data when called.
+//Allows user to view and retrieve all employee data when called.
 function viewEmployee() {
   console.log("employeeData");
   connection.query("select * from employee", function(err, data) {
@@ -74,7 +76,7 @@ function viewEmployee() {
   });
 }
 
-//Allows user to retrieve all department data when called.
+//Allows user to view and retrieve all department data when called.
 function viewDepartment() {
   console.log("employeeData");
   connection.query("select * from department", function(err, data) {
@@ -85,7 +87,7 @@ function viewDepartment() {
   });
 }
 
-//Allows user to retrieve all employee position data when called.
+//Allows user to view and retrieve all employee position data when called.
 function viewPosition() {
   console.log("employeeData");
   connection.query("select * from position", function(err, data) {
@@ -102,37 +104,42 @@ function addEmployee() {
   inquirer
     .prompt([
       {
+        //input prompt allows user to add employee first name.
         type: "input",
         name: "firstname",
         message: "Add First Name"
       },
       {
+        //input prompt allows user to add employee last name.
         type: "input",
         name: "lastname",
         message: "Add Last Name"
       },
       {
+        //A list that displays the position ID options 1-4.
         type: "list",
         name: "positionid",
         message: "Assign a Position ID",
         choices: [1, 2, 3, 4]
       },
       {
+        //A list prompt that displays the manager IF options 1 and 2.
         type: "list",
         name: "managerid",
         message: "Assign a Manager ID",
         choices: [1, 2]
       }
-    ])
+    ]) //Initiates a response for the input values to be displayed after entered by the user.
     .then(function(response) {
       connection.query(
+        //inserts the data into employee table and first name, last name, pos_id and manager_id column.
         "insert into employee (first_name, last_name, pos_id, manager_id) values(?, ?, ?, ?)",
         [
           response.firstname,
           response.lastname,
           response.positionid,
           response.managerid
-        ],
+        ], //err throws an error if response does not work.
         function(err, data) {
           if (err) throw err;
           console.table(data);
@@ -149,15 +156,18 @@ function addDepartment() {
   inquirer
     .prompt([
       {
+        // Prompt that allows user to input a new department.
         type: "input",
         name: "department",
         message: "Add a New Department"
       }
-    ])
+    ]) //Initiates a response for the input values to be displayed after entered by the user.
     .then(function(response) {
       connection.query(
+        //inserts the data into department table and name column.
         "insert into department (name) values(?)",
         response.department,
+        //err throws an error if response does not work.
         function(err, data) {
           if (err) throw err;
           console.table(data);
@@ -174,16 +184,19 @@ function addPosition() {
   inquirer
     .prompt([
       {
+        // Prompt that allows user to input a new employee position.
         type: "input",
         name: "position",
         message: "Add a Position"
       },
       {
+        // Prompt that allows user to input a new employee salary.
         type: "input",
         name: "salary",
         message: "Add a Salary"
       },
       {
+        // Prompt that allows user to input a new employee dept Id.
         type: "input",
         name: "department_id",
         message: "Add a dept ID"
@@ -191,12 +204,14 @@ function addPosition() {
     ])
     .then(function(response) {
       connection.query(
+        //inserts the data into the position table and title, salary, and dept ID column.
         "INSERT INTO position SET ?",
         {
           title: response.position,
           salary: response.salary,
           department_id: response.department_id
         },
+        //err throws an error if response does not work.
         function(err, data) {
           if (err) throw err;
           console.table(data);
@@ -206,28 +221,30 @@ function addPosition() {
       );
     });
 }
-
+//function to update a Position to the position table.
 function updatePosition() {
-  // viewEmployee()
   inquirer
     .prompt([
-      {
+      {// Prompt that allows user to update an employee Id.
         type: "input",
         name: "employeeID",
         message: "Update employee ID"
       },
-      {
+      {// Prompt that allows user to update an employee position Id with choices.
         type: "choices",
         name: "positionID",
         message: "Update Position ID",
         choices: [1, 2, 3, 4]
-      },
+      }
     ])
     .then(function(response) {
       connection.query(
-            "UPDATE employee SET pos_id = ? WHERE id = ?", 
-            [response.positionID, response.employeeID],
-            function(err, result) { start()
-            })
-          })
+        //Updates the data into the employee position table.
+        "UPDATE employee SET pos_id = ? WHERE id = ?",
+        [response.positionID, response.employeeID],
+        function(err, result) {
+          start();
+        }
+      );
+    });
 }
